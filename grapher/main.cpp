@@ -17,6 +17,9 @@ int main() {
 	Vector_t secondAbscissa (0.55 * scrX, 0.85 * scrY, 0.4 * scrX, 0);
 	Plot_t secondPlot(&secondAbscissa, &secondOrdinate, 0, 0, firstPlotColor);
 	
+	Vector_t a(0.55 * scrX, 0.85 * scrY, 100, -50);
+	Vector_t b(0.55 * scrX, 0.85 * scrY, 50, -100);
+	Vector_t c = a + b;
 	
 	while (window.isOpen()) {
         sf::Event event;
@@ -27,6 +30,10 @@ int main() {
         }
 
         window.clear(sf::Color::White);
+		DrawVector(&a, &window, 0xFFFFFF, 0.25);
+		DrawVector(&b, &window, 0xFFFFFF, 0.25);
+		DrawVector(&c, &window, 0xFFFFFF, 0.25);
+		void DrawVector(Vector_t *vector, sf::RenderWindow *window,int color, double fraction);
 		firstPlot.Draw(&window);
 		secondPlot.Draw(&window);
         window.display();
