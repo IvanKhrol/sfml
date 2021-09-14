@@ -146,8 +146,8 @@ class Vector_t {
 //----------------------------------------------------------------------------------------------------------
 		void RightRotate(double angle) {
 			int temp_x = this->X, temp_y = this->Y;
-			this->X =   temp_x * cos(angle) + temp_y * sin(angle);
-			this->Y = - temp_x * sin(angle) + temp_y * cos(angle);
+			this->X = round(  temp_x * cos(angle) + temp_y * sin(angle));
+			this->Y = round(- temp_x * sin(angle) + temp_y * cos(angle));
 		}
 
 		void LeftRotate(double angle) {
