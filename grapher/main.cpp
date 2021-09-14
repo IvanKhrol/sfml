@@ -1,6 +1,4 @@
-#include <cstdlib>
-#include <cmath>
-#include "grapher.cpp"
+#include "graphics.hpp"
 
 int main() {
 	
@@ -10,15 +8,14 @@ int main() {
 	
 	int firstPlotColor = 0x000000;
 
-	Vector_t firstOrdinate (0.05 * scrX, 0.85 * scrY, 0.05 * scrX, 0.05 * scrY);
-	Vector_t firstAbscissa (0.05 * scrX, 0.85 * scrY, 0.45 * scrX, 0.85 * scrY);
-	Plot_t firstPlot(firstOrdinate, firstAbscissa, firstPlotColor);
+	Vector_t firstOrdinate (0.05 * scrX, 0.85 * scrY, 0, -0.8 * scrY);
+	Vector_t firstAbscissa (0.05 * scrX, 0.85 * scrY, 0.4 * scrX, 0);
+	Plot_t firstPlot(&firstAbscissa, &firstOrdinate,  0, 0, firstPlotColor);
 
-	Vector_t secondOrdinate (0.55 * scrX, 0.85 * scrY, 0.55 * scrX, 0.05 * scrY);
-	Vector_t secondAbscissa (0.55 * scrX, 0.85 * scrY, 0.95 * scrX, 0.85 * scrY);
-	
-	//Plot_t firstPlot (&firstCentre,  &firstAbscissa,  &firstOrdinate,  0xffffff);
-	//Plot_t secondPlot(&secondCentre, &secondAbscissa, &secondOrdinate, 0xffffff);
+
+	Vector_t secondOrdinate (0.55 * scrX, 0.85 * scrY, 0, -0.8 * scrY);
+	Vector_t secondAbscissa (0.55 * scrX, 0.85 * scrY, 0.4 * scrX, 0);
+	Plot_t secondPlot(&secondAbscissa, &secondOrdinate, 0, 0, firstPlotColor);
 	
 	
 	while (window.isOpen()) {
@@ -30,12 +27,10 @@ int main() {
         }
 
         window.clear(sf::Color::White);
-
-		//firstPlot.Draw(&window);
-		//secondPlot.Draw(&window);
-
+		firstPlot.Draw(&window);
+		secondPlot.Draw(&window);
         window.display();
     }
 
-    return 0;*/
+    return 0;
 }
