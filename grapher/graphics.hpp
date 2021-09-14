@@ -9,11 +9,35 @@
 sf::VertexArray *CreateSegment(Point_t *First, Point_t *Second, int color);
 sf::VertexArray *CreateSegment (Vector_t *vector, int color);
 
-void DrowVector(Vector_t *vector, sf::RenderWindow *window, int color, double fracion);
+void DrawVector(Vector_t *vector, sf::RenderWindow *window, int color, double fracion);
 
 class Plot_t {
 	public:
-		Draw();
+		Plot_t(Point_t Centre, Point_t Ord, Point_t Abs, int MaxElemX, int MaxElemY, int color) {
+			this->Ordinate = new Vector_t(Centre, Ord);
+			this->Abscissa = new Vector_t(Centre, Abs);
+			this->MaxElemX = MaxElemX;
+			this->MaxElemY = MaxElemY;
+			this->Color    = color;
+		}
+	Plot_t(Vector_t *Abscissa, Vector_t *Ordinate, int MaxElemX, int MaxElemY, int color) {
+			this->Ordinate = Ordinate;
+			this->Abscissa = Abscissa;
+			this->MaxElemX = MaxElemX;
+			this->MaxElemY = MaxElemY;
+			this->Color    = color;
+		}
+
+
+		~Plot_t() {
+			delete this->Ordinate;
+			delete this->Abscissa;
+		}
+
+		void Draw(sf::RenderWindow *window) {
+			DrawVector(this->Ordinate, window, 0x000000, 0.05);
+			DrawVector(this->Abscissa, window, 0x000000, 0.05);
+		}
 
 	private:
 		Vector_t *Ordinate;
@@ -40,19 +64,20 @@ sf::VertexArray *CreateSegment (Point_t *First, Point_t *Second, int color) {
 }
 
 void DrawVector(Vector_t *vector, sf::RenderWindow *window,int color, double fraction) {
-	double lambda = (fraction != 1) ? fraction / (1 - fraction) : 1;
+	double lambda = (1. - fraction) / fraction;
 
 	Point_t endingPoint  (vector->GetX() + vector->GetStartingPoint()->x,
 					 	  vector->GetY() + vector->GetStartingPoint()->y);
 	Point_t startingPoint(vector->GetStartingPoint()->x, 
 						  vector->GetStartingPoint()->y);
 
-	Vector_t firstPart (endingPoint, (startingPoint.x + lambda * endingPoint.x) / (1 + lambda), 
-						  			 (startingPoint.y + lambda * endingPoint.y) / (1 + lambda));
-	Vector_t secondPart(endingPoint, (startingPoint.x + lambda * endingPoint.x) / (1 + lambda), 
-									 (startingPoint.y + lambda * endingPoint.y) / (1 + lambda)); 
+	Vector_t firstPart (endingPoint, (startingPoint.x + lambda * endingPoint.x) / (1. + lambda) - endingPoint.x, 
+						  			 (startingPoint.y + lambda * endingPoint.y) / (1. + lambda) - endingPoint.y);
+	Vector_t secondPart(endingPoint, (startingPoint.x + lambda * endingPoint.x) / (1. + lambda) - endingPoint.x, 
+									 (startingPoint.y + lambda * endingPoint.y) / (1. + lambda) - endingPoint.y); 
+	
 	firstPart.RightRotate(M_PI / 6);
-	secondPart.RightRotate(M_PI / 3);
+	secondPart.LeftRotate(M_PI / 6);
 
 	Point_t result_1(firstPart.GetX()  + firstPart.GetStartingPoint()->x,
 					 firstPart.GetY()  + firstPart.GetStartingPoint()->y);
@@ -61,7 +86,7 @@ void DrawVector(Vector_t *vector, sf::RenderWindow *window,int color, double fra
 
 	sf::VertexArray *segmentArrow1 = CreateSegment(firstPart.GetStartingPoint() , &result_1   , color);
 	sf::VertexArray *segmentArrow2 = CreateSegment(secondPart.GetStartingPoint(), &result_2   , color);
-	sf::VertexArray *segmentMain   = CreateSegment(&startingPoint				, &endingPoint, color);
+	sf::VertexArray *segmentMain   = CreateSegment(&startingPoint               , &endingPoint, color);
 
 	window->draw(*segmentArrow1);
 	window->draw(*segmentArrow2);
@@ -70,24 +95,4 @@ void DrawVector(Vector_t *vector, sf::RenderWindow *window,int color, double fra
 	delete segmentArrow1;
 	delete segmentArrow2;
 	delete segmentMain;
-}
-
-int main() {
-	sf::RenderWindow window(sf::VideoMode(1000, 1000), "Brand new Grapher");
-	Vector_t result(100, 100, 100, 0);
-	while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-
-        window.clear(sf::Color::White);
-
-		DrawVector(&result, &window, 0x000000, 0.2);
-
-        window.display();
-    }
-	return 0;
 }
